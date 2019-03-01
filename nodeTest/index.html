@@ -1,0 +1,33 @@
+
+<html>
+    <head>
+    <title>文件上传表单</title>
+    </head>
+    <body>
+    <h3>文件上传：</h3>
+    选择一个文件上传: <br />
+    <form action="/file_upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" size="50" />
+    <br />
+    <input type="submit" value="上传文件" />
+    </form>
+	<script>
+	var ws = new WebSocket("ws://localhost:3000");
+
+ws.onopen = function(evt) { 
+  console.log("Connection open ...");
+  ws.send("你好吗?");
+};
+
+ws.onmessage = function(evt) {
+  console.log( "Received Message: " + evt.data);
+  ws.close();
+};
+
+ws.onclose = function(evt) {
+  console.log("Connection closed.");
+};   
+	</script>
+    </body>
+    </html>
+    
