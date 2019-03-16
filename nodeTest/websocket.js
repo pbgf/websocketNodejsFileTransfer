@@ -8,11 +8,11 @@ let path=[];
 // Scream server example:"hi"->"HI!!!",服务器把字母大写
 let server = ws.createServer(function(conn){
     function sendFiles(){
-        let files=fs.readdirSync('./dist/'+path.join('/'));
+        let files=fs.readdirSync('./guestStorge/'+path.join('/'));
         let response={};
         let components = [];
         files.forEach(function (item, index) {
-            let stat = fs.lstatSync("./dist/" + path.join('/')+'/'+ item)
+            let stat = fs.lstatSync("./guestStorge/" + path.join('/')+'/'+ item)
             let file={}
             file.name=item;
             if (stat.isDirectory() === true) {
@@ -41,7 +41,7 @@ let server = ws.createServer(function(conn){
         inStream.on("end", function () {
             console.log("Received " + data.length + " bytes of binary data")
             console.log(data)
-            fs.writeFile('./dist/'+path.join('/')+'/'+ fileName, data, (err) => {
+            fs.writeFile('./guestStorge/'+path.join('/')+'/'+ fileName, data, (err) => {
                 if (err) throw err;
                 console.log('文件已保存');
                 let response={};
@@ -65,7 +65,7 @@ let server = ws.createServer(function(conn){
             path.pop();
         }else if(op.operation=='download'){
             console.log(op.fileName)
-            fs.readFile('./dist/'+op.path,(err,data)=>{
+            fs.readFile('./guestStorge/'+op.path,(err,data)=>{
                 if (err) throw err;
                 
                 
@@ -73,7 +73,7 @@ let server = ws.createServer(function(conn){
                 conn.sendBinary(data);
             })
         }else if(op.operation=='mkdir'){
-            fs.mkdir('./dist/'+op.path+'/'+op.dirname,(err)=>{
+            fs.mkdir('./guestStorge/'+op.path+'/'+op.dirname,(err)=>{
                 console.log(err);
                 
             })
