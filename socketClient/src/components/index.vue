@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header>
-            <el-col :span="2">
+            <el-col :xl="2" :lg="3" :md="4" :sm="5" :xs="7">
                 <a  href="#"><img width="30px" :src="require('../assets/云.png')"></a>
                 <h2 class="title">网络云盘</h2>
             </el-col>
@@ -45,7 +45,6 @@
     
 </template>
 <script>
-import Canvas2Image from 'canvas2image/canvas2image'
 import { Loading } from 'element-ui';
 export default {
     
@@ -102,10 +101,10 @@ export default {
             let icon='';
             switch(type){
                 case 'dir':
-                    icon='../../static/img/18_sucai.png';
+                    icon=require('../assets/18_sucai.png');
                     break;
                 case 'file':
-                    icon='../../static/img/unknown.png';
+                    icon=require('../assets/unknown.png');
                     break;
             }
             return icon;
@@ -151,20 +150,7 @@ export default {
             message.path='';
             ws.send(JSON.stringify(message));
         },
-        down(image) { 
-            console.log(image)
-            let loadingInstance = Loading.service({});
-            image.onload=()=>{
-                let canvas = document.createElement("canvas"); 
-                canvas.width = image.width; 
-                canvas.height = image.height;
-                canvas.getContext("2d").drawImage(image, 0, 0); 
-                
-                Canvas2Image.saveAsImage(canvas,image.width,image.height,'png')
-                loadingInstance.close();
-            }
-            
-        },
+
     },
     mounted(){
         let that=this;
@@ -180,32 +166,15 @@ export default {
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(evt.data);
                 link.download = that.fileName;
+                document.documentElement.appendChild(link);
                 link.click();
-                window.URL.revokeObjectURL(link.href);
+                link.remove();
+                setTimeout(function () { //延时释放
+                        URL.revokeObjectURL(link.href); //用URL.revokeObjectURL()来释放这个object URL
+                }, 100);
             }else{
                 let response=JSON.parse(evt.data);
-                if(response.type=='file'){
-                    let mime={}
-                    switch(response.mime){
-                        case 'txt':
-                            mime.type='text/plain;charset=utf-8';
-                            let blob = new Blob([response.data], mime);
-                            saveAs(blob, response.name);//saveAs(blob,filename)
-                            break;
-                        case 'img':
-                            mime.type='image/png'
-                            let img =document.createElement('img');
-                            img.src=response.data;
-                            let canvas=that.down(img);
-                            //that.down(canvas,mime.type);
-                            break;
-                        case 'mp4':
-                            mime.type='audio/mp4'
-                            break;
-                    }
-                    
-                    
-                }else if(response.type=='message'){
+                if(response.type=='message'){
                     that.$message('文件已上传');
                     that.refresh();
                 }else{
