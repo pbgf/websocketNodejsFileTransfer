@@ -1,9 +1,14 @@
 # websocketNodejsFileTransfer
 
-vue网页启动：  
+## vue网页启动： 
+```sh
 cd socketClient  
 npm install  
-npm run serve  
-服务端启动：  
+npm run serve 
+```
+ 
+## 服务端启动：  
+```sh
 cd nodeTest  
 node websocket
+```
